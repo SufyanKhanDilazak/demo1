@@ -76,31 +76,53 @@ const PortfolioSection: React.FC = () => {
     },
   ], []);
 
-  const containerVariants = useMemo(() => ({
+  const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
       transition: { staggerChildren: 0.1 },
     },
-  }), []);
+  };
 
-  const cardVariants = useMemo(() => ({
+  const cardVariants = {
     hidden: { opacity: 0, y: 50 },
     visible: { 
       opacity: 1, 
       y: 0,
       transition: { type: "spring", stiffness: 100, damping: 12 },
     },
-  }), []);
+  };
 
-  const titleVariants = useMemo(() => ({
+  const titleVariants = {
     hidden: { opacity: 0, y: -50 },
     visible: { 
       opacity: 1, 
       y: 0,
       transition: { type: "spring", stiffness: 100, damping: 12 },
     },
-  }), []);
+  };
+
+  const SkillIcon = React.memo(({ skill }: { skill: SkillIcon }) => (
+    <motion.div
+      key={skill.id}
+      className="flex items-center backdrop-blur-sm bg-white/20 rounded-full p-1 sm:p-2"
+      whileHover={{ scale: 1.05 }}
+      whileTap={{ scale: 0.95 }}
+    >
+      <div className="w-8 h-8 sm:w-12 sm:h-12 mr-1 sm:mr-2 rounded-full overflow-hidden bg-white/30 flex items-center justify-center">
+        <Image
+          src={skill.icon}
+          alt={`${skill.name} icon`}
+          width={32}
+          height={32}
+          className="object-cover w-full h-full rounded-full"
+        />
+      </div>
+      <span className="text-xs sm:text-sm font-medium text-white">{skill.name}</span>
+    </motion.div>
+  ));
+
+  SkillIcon.displayName = 'SkillIcon';
 
   const memoizedProjects = useMemo(() =>
     projects.map((project) => (
@@ -122,28 +144,12 @@ const PortfolioSection: React.FC = () => {
           <p className="text-xs sm:text-base text-gray-200 mb-2 sm:mb-4">{project.description}</p>
           <div className="grid grid-cols-2 gap-2 sm:gap-4">
             {project.skills.map((skill) => (
-              <motion.div
-                key={skill.id}
-                className="flex items-center backdrop-blur-sm bg-white/20 rounded-full p-1 sm:p-2"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                <div className="w-8 h-8 sm:w-12 sm:h-12 mr-1 sm:mr-2 rounded-full overflow-hidden bg-white/30 flex items-center justify-center">
-                  <Image
-                    src={skill.icon}
-                    alt={`${skill.name} icon`}
-                    width={32}
-                    height={32}
-                    className="object-cover w-full h-full rounded-full"
-                  />
-                </div>
-                <span className="text-xs sm:text-sm font-medium text-white">{skill.name}</span>
-              </motion.div>
+              <SkillIcon key={skill.id} skill={skill} />
             ))}
           </div>
         </div>
       </motion.div>
-    )), [cardVariants, projects]);
+    )), [projects, cardVariants]);
 
   return (
     <section id="portfolio" className="py-6 sm:py-16">
